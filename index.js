@@ -10,20 +10,38 @@ function acceptData(event) {
         return null
     }
 
+    // instantiate an instance of a FileReader
     const reader = new FileReader();
 
+    // once loaded, parse the data to prepare for it being written to html
     reader.onload = function(data) {
         const result = JSON.parse(data.target.result)
         writeHtml(result)
      }
-        
+    
+    // declaring the data type from file submission (other possibilities are URL, binary, and arraybuffer)
     reader.readAsText(file)
 }
 
 function writeHtml(result) {
-    document.getElementById('content').innerHTML = result[0].tag
-}
+    let markup = ``
+    console.log(Array.isArray(result))
+    result.forEach(item => {
+        if(Array.isArray(item)) return item.map(node).join('')
+        let tag = item.tag
+        let content = item.content
+        console.log(content)
+        if('string' == typeof content || 'number' == typeof content) {
+            console.log('test')
+            markup += `<${tag}>${content}</${tag}>`
+        }else{
+            return null
+        }
+    })
+    console.log(markup)
+    document.getElementById('content').innerHTML = markup
 
+}
 
 
 document.getElementById('file').addEventListener('change', acceptData);
