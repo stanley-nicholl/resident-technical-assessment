@@ -23,24 +23,32 @@ function acceptData(event) {
     reader.readAsText(file)
 }
 
-function writeHtml(result) {
-    let markup = ``
-    console.log(Array.isArray(result))
-    result.forEach(item => {
-        if(Array.isArray(item)) return item.map(node).join('')
-        let tag = item.tag
-        let content = item.content
-        console.log(content)
-        if('string' == typeof content || 'number' == typeof content) {
-            console.log('test')
-            markup += `<${tag}>${content}</${tag}>`
+function processData(result, code = '') {
+    for(let i = 0; i < result.length; i++) {
+        let { content, tag } = result[i]
+        if(Array.isArray(content)){
+            code +=`<${tag}>`
+            content.forEach(item => {
+                code += `<${item.tag}>${item.content}</${item.tag}>`
+                // console.log(code, i)
+            })
+            code +=`</${tag}>`
+        }else if('string' == typeof content || 'number' == typeof content) {
+            code += `<${tag}>${content}</${tag}>`
+            // console.log(code, i)
         }else{
-            return null
+            let array = []
+            array.push(content)
+            console.log(content)
+            code += `<${tag}>${processData(array, code)}</${tag}>`
+            // console.log(code, i)
         }
-    })
-    console.log(markup)
-    document.getElementById('content').innerHTML = markup
+    }
+    return code
+}
 
+function writeHtml(result) {
+    document.getElementById('content').innerHTML = processData(result)
 }
 
 
