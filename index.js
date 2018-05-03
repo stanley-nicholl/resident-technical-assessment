@@ -23,32 +23,30 @@ function acceptData(event) {
     reader.readAsText(file)
 }
 
-function processData(result, code = '') {
-    for(let i = 0; i < result.length; i++) {
-        let { content, tag } = result[i]
-        if(Array.isArray(content)){
-            code +=`<${tag}>`
-            content.forEach(item => {
-                code += `<${item.tag}>${item.content}</${item.tag}>`
-                // console.log(code, i)
-            })
-            code +=`</${tag}>`
-        }else if('string' == typeof content || 'number' == typeof content) {
-            code += `<${tag}>${content}</${tag}>`
-            // console.log(code, i)
-        }else{
-            let array = []
-            array.push(content)
-            console.log(content)
-            code += `<${tag}>${processData(array, code)}</${tag}>`
-            // console.log(code, i)
-        }
+
+function processData(result) {
+    let html = ''
+    let { content, tag } = result
+    if(Array.isArray(content)){
+        html +=`<${tag}>`
+        content.forEach(item => {
+            html += `<${item.tag}>${item.content}</${item.tag}>`
+        })
+        html +=`</${tag}>`
+    }else if('string' == typeof content || 'number' == typeof content) {
+        html += `<${tag}>${content}</${tag}>`
+    }else{
+        let array = []
+        array.push(content)
+        html += `<${tag}>${processData(content)}</${tag}>`
     }
-    return code
+    return html
 }
 
 function writeHtml(result) {
-    document.getElementById('content').innerHTML = processData(result)
+    document.getElementById('content').innerHTML = result.reduce((acc, item) => {
+        return acc + processData(item)
+    }, '')
 }
 
 
