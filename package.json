@@ -1,0 +1,22 @@
+{
+  "name": "technical-assessment",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stanley-nicholl/resident-technical-assessment.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/stanley-nicholl/resident-technical-assessment/issues"
+  },
+  "homepage": "https://github.com/stanley-nicholl/resident-technical-assessment#readme",
+  "dependencies": {
+    "flat": "^4.0.0"
+  }
+}

@@ -26,24 +26,34 @@ function acceptData(event) {
 
 function processData(result) {
     let html = ''
+    if(!result.content || !result.tag) return null
     let { content, tag } = result
     if(Array.isArray(content)){
         html +=`<${tag}>`
         content.forEach(item => {
-            html += `<${item.tag}>${item.content}</${item.tag}>`
+            if('string' == typeof item.content || 'number' == typeof item.content) {
+                html += `<${item.tag}>${item.content}</${item.tag}>`
+            }else if(Array.isArray(item.content)){
+                html +=`<${tag}>`
+                item.content.forEach(subItem => {
+                    html += `<${subItem.tag}>${subItem.content}</${subItem.tag}>`
+                })
+                html +=`</${tag}>`
+            }else{
+                html += `<${item.tag}>${processData(item.content)}</${item.tag}>`
+            }        
         })
         html +=`</${tag}>`
     }else if('string' == typeof content || 'number' == typeof content) {
         html += `<${tag}>${content}</${tag}>`
     }else{
-        let array = []
-        array.push(content)
         html += `<${tag}>${processData(content)}</${tag}>`
     }
     return html
 }
 
 function writeHtml(result) {
+    document.getElementById('content').innerHTML = ''
     document.getElementById('content').innerHTML = result.reduce((acc, item) => {
         return acc + processData(item)
     }, '')
