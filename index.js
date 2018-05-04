@@ -23,13 +23,22 @@ function acceptData(event) {
     reader.readAsText(file)
 }
 
-
-function processData(result) {
+//processor combs through an individual object 
+function processData(object) {
+    //html is stored and accumulated as a string before being returned to the write function below
     let html = ''
-    if(!result.content || !result.tag) return null
-    let { content, tag } = result
+
+    //to enusre no recursion call goes deeper than the JSON object depth
+    if(!object.content || !object.tag) return null
+
+    //destructuring the object to reduce code
+    let { content, tag } = object
+
+    //testing if the object's content is an array
+    //nested to handle required JSON object depth
     if(Array.isArray(content)){
         html +=`<${tag}>`
+
         content.forEach(item => {
             if('string' == typeof item.content || 'number' == typeof item.content) {
                 html += `<${item.tag}>${item.content}</${item.tag}>`
@@ -44,20 +53,36 @@ function processData(result) {
             }        
         })
         html +=`</${tag}>`
+        
+    //testing if the object's content is a string or number
     }else if('string' == typeof content || 'number' == typeof content) {
         html += `<${tag}>${content}</${tag}>`
+
+    //if not a string, number or array, the item is an object which results in a recursive call
     }else{
         html += `<${tag}>${processData(content)}</${tag}>`
     }
+
+    //upon completion, the accumulated html is returned as a string
     return html
 }
 
+//write markup to webpage by sending through each element of the JSON object through the processor
 function writeHtml(result) {
+    //clear the DOM, at least the variable portion should someone sumbit two different files
     document.getElementById('content').innerHTML = ''
+
+    //combines all the HTML that comes out of the processor function above
     document.getElementById('content').innerHTML = result.reduce((acc, item) => {
         return acc + processData(item)
     }, '')
 }
 
+//hi, wes in binary
+console.log(` _______  __          ________                __ 
+|   |   ||__|        |  |  |  |.-----..-----.|  |
+|       ||  | __     |  |  |  ||  -__||__ --||__|
+|___|___||__||  |    |________||_____||_____||__|
+              |_|                                `)
 
 document.getElementById('file').addEventListener('change', acceptData);
