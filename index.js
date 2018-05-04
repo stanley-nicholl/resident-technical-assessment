@@ -78,7 +78,7 @@ function writeHtml(result) {
     }, '')
 }
 
-//hi, wes in binary
+//hi, wes!
 console.log(` _______  __          ________                __ 
 |   |   ||__|        |  |  |  |.-----..-----.|  |
 |       ||  | __     |  |  |  ||  -__||__ --||__|
